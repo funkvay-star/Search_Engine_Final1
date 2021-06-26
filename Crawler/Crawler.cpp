@@ -69,3 +69,22 @@ int main()
     }
 }
 */
+
+int main()
+{
+    DocumentRepository docRep;
+
+    docRep.saveDB(DocumentEntry("URL.HEHH", "TITLE CHIKI BRIKI", "Description kuku", "TEXT kak TEXT"));
+    docRep.saveDB(DocumentEntry("URL.HEHH1", "TITLE CHIKI BRIKI1", "Description kuku1", "TEXT kak TEXT1"));
+    docRep.saveDB(DocumentEntry("ULRRRR", "TIKI", "kuku", "TEXEXT"));
+
+    for(auto it : docRep.getAllDB())
+    {
+        //std::cout << it.getUrl() << "    " << it.getText() << "\n";
+    }
+
+    if(docRep.getByUrlDB("ULRRRR").has_value())
+    {
+        std::cout << "has value";
+    }
+}

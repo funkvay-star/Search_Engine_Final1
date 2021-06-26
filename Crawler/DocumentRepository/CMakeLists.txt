@@ -8,6 +8,9 @@ add_library(
 
     DocumentRepository.h
     DocumentRepository.cpp
+
+    DataBaseDocumentRepository.h
+    DataBaseDocumentRepository.cpp
 )
 
-target_link_libraries(DocumentRepository)
+target_link_libraries(DocumentRepository -lmysqlcppconn)

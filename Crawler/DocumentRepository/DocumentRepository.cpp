@@ -29,3 +29,32 @@ void DocumentRepository::save(DocumentEntry& entry)
     }
     document.push_back(entry);
 }
+
+////////////////////
+
+std::vector<DocumentEntry> DocumentRepository::getAllDB()
+{
+    DataBaseDocumentRepository DocDB;
+
+    DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
+
+    return DocDB.getAll();
+}
+
+std::optional<DocumentEntry> DocumentRepository::getByUrlDB(const std::string& url)
+{
+    DataBaseDocumentRepository DocDB;
+
+    DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
+
+    return DocDB.getByUrl(url);
+}
+
+void DocumentRepository::saveDB(const DocumentEntry& entry)
+{
+    DataBaseDocumentRepository DocDB;
+
+    DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
+
+    DocDB.save(entry);
+}
