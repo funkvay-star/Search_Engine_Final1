@@ -56,7 +56,7 @@ std::vector<WebSite> DataBaseWebSite::getAll()
     std::vector<WebSite> answer;
     try
     {
-        prepStatment = connection->prepareStatement("SELECT * FROM Website");
+        prepStatment = connection->prepareStatement("SELECT * FROM WebSite");
         res = prepStatment->executeQuery();
 
         while(res->next())
@@ -81,4 +81,14 @@ std::vector<WebSite> DataBaseWebSite::getAll()
         std::cerr << e.what() << '\n';
     }
     return answer;
+}
+
+DataBaseWebSite::~DataBaseWebSite()
+{
+    driver->threadEnd();
+    connection->close();
+
+    delete connection;
+    delete prepStatment;
+    delete res;
 }

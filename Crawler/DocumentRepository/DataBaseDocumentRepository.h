@@ -25,6 +25,8 @@ public:
     std::optional<DocumentEntry> getByUrl(const std::string& Url);
 
     std::vector<DocumentEntry> getAll();
+
+    ~DataBaseDocumentRepository();
 };
 
 #endif

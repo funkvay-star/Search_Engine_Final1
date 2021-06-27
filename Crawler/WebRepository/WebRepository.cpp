@@ -31,6 +31,9 @@ std::vector<WebSite> WebRepository::getAllDB()
     WebDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
     source = WebDB.getAll();
+
+    //WebDB.~DataBaseWebSite();
+
     return source;
 }
 
@@ -41,6 +44,8 @@ void WebRepository::saveDB(const WebSite& website)
     WebDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
     WebDB.save(website);
+
+    //WebDB.~DataBaseWebSite();
 
     //std::string query = "SELECT id FROM SearchEngineSchemas ORDER BY id ASC";
 

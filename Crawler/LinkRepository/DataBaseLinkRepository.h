@@ -28,6 +28,8 @@ public:
     std::vector<LinkEntry> getByInformation(const std::string& domain, const LinkStatus& status, int count);
 
     std::optional<LinkEntry> getByUrl(const std::string& Url);
+
+    ~DataBaseLinkRepository();
 };
 
 #endif

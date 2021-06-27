@@ -103,7 +103,7 @@ std::vector<LinkEntry> DataBaseLinkRepository::getAll()
                 statusLinkStatus = LinkStatus::WAITING;
             }
 
-            std::cout << "DataBaseLinkRepository getAllDB going to push \n";
+            //std::cout << "DataBaseLinkRepository getAllDB going to push \n";
             answer.push_back(LinkEntry(res->getString("url"), res->getString("domain"), statusLinkStatus, res->getInt("updated")));
         }
         return answer;
@@ -157,6 +157,8 @@ std::optional<LinkEntry> DataBaseLinkRepository::getByUrl(const std::string& Url
 
             if(res->getString("url") == Url)
             {
+                //std::cout << "url-> " << url << "              Url-> " << Url << "\n";
+
                 int Status = res->getInt("status");
 
                 LinkStatus statusLinkStatus;
@@ -181,6 +183,17 @@ std::optional<LinkEntry> DataBaseLinkRepository::getByUrl(const std::string& Url
     {
         std::cerr << e.what() << '\n';
     }
+    //return std::make_optional(LinkEntry("a", "b", LinkStatus::ERROR, 0));
 
-    return std::make_optional(LinkEntry());
+    return {};
+}
+
+DataBaseLinkRepository::~DataBaseLinkRepository()
+{
+    driver->threadEnd();
+    connection->close();
+
+    delete connection;
+    delete prepStatment;
+    delete res;
 }

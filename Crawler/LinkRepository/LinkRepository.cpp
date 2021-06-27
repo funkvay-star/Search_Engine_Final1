@@ -95,9 +95,13 @@ std::vector<LinkEntry> LinkRepository::getAllDB()
 
     LinkDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
-    std::cout << "LinkRepository::getAllDB\n";
+    //std::cout << "LinkRepository::getAllDB\n";
 
-    return LinkDB.getAll();
+    auto answer = LinkDB.getAll();
+    
+    //LinkDB.~DataBaseLinkRepository();
+
+    return answer;
 }
 
 std::vector<LinkEntry> LinkRepository::getByInformationDB(const std::string& domain, const LinkStatus& status, int count)
@@ -106,7 +110,11 @@ std::vector<LinkEntry> LinkRepository::getByInformationDB(const std::string& dom
 
     LinkDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
-    return LinkDB.getByInformation(domain, status, count);
+    auto answer = LinkDB.getByInformation(domain, status, count);
+
+    //LinkDB.~DataBaseLinkRepository();
+
+    return answer;
 }
 
 void LinkRepository::saveDB(const LinkEntry& entry)
@@ -116,6 +124,8 @@ void LinkRepository::saveDB(const LinkEntry& entry)
     LinkDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
     LinkDB.save(entry);
+
+    //LinkDB.~DataBaseLinkRepository();
 }
 
 std::optional<LinkEntry> LinkRepository::getByUrlDB(const std::string& Url)
@@ -124,5 +134,8 @@ std::optional<LinkEntry> LinkRepository::getByUrlDB(const std::string& Url)
 
     LinkDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
-    return LinkDB.getByUrl(Url);
+    auto answer = LinkDB.getByUrl(Url);
+    //LinkDB.~DataBaseLinkRepository();
+
+    return answer;
 }

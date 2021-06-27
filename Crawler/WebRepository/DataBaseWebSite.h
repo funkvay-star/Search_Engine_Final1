@@ -24,6 +24,8 @@ public:
     void save(const WebSite& webSite);
 
     std::vector<WebSite> getAll();
+
+    ~DataBaseWebSite();
 };
 
 #endif

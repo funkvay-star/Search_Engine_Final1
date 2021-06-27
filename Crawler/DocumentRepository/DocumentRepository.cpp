@@ -38,7 +38,11 @@ std::vector<DocumentEntry> DocumentRepository::getAllDB()
 
     DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
-    return DocDB.getAll();
+    auto answer = DocDB.getAll();
+
+    //DocDB.~DataBaseDocumentRepository();
+
+    return answer;
 }
 
 std::optional<DocumentEntry> DocumentRepository::getByUrlDB(const std::string& url)
@@ -47,7 +51,11 @@ std::optional<DocumentEntry> DocumentRepository::getByUrlDB(const std::string& u
 
     DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
-    return DocDB.getByUrl(url);
+    auto answer = DocDB.getByUrl(url);
+
+    //DocDB.~DataBaseDocumentRepository();
+
+    return answer;
 }
 
 void DocumentRepository::saveDB(const DocumentEntry& entry)
@@ -57,4 +65,6 @@ void DocumentRepository::saveDB(const DocumentEntry& entry)
     DocDB.Init("tcp://127.0.0.1:3306", "root", "password", "SearchEngineSchemas");
 
     DocDB.save(entry);
+
+    //DocDB.~DataBaseDocumentRepository();
 }

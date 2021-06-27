@@ -103,3 +103,13 @@ std::vector<DocumentEntry> DataBaseDocumentRepository::getAll()
     }
     return answer;
 }
+
+DataBaseDocumentRepository::~DataBaseDocumentRepository()
+{
+    driver->threadEnd();
+    connection->close();
+
+    delete connection;
+    delete prepStatment;
+    delete res;
+}

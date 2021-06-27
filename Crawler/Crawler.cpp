@@ -70,6 +70,7 @@ int main()
 }
 */
 
+/*
 int main()
 {
     DocumentRepository docRep;
@@ -86,5 +87,130 @@ int main()
     if(docRep.getByUrlDB("ULRRRR").has_value())
     {
         std::cout << "has value";
+    }
+}
+*/
+
+int main()
+{
+    WebRepository webrep;
+
+    std::time_t currentTime{};
+
+    PageLoader pageLoader;
+
+    DocumentExtractor linkExtractor;
+
+    InformationExtractor informationExtractor;
+
+    std::map<std::string, InformationSaver> webSaver;
+
+    WebSite w("rau.am", "https://rau.am/", time(&currentTime));
+    //WebSite w("rau.am", "https://en.wikipedia.org/wiki/Armenia", time(&currentTime));
+    webrep.saveDB(w);
+
+    w.getDomain();
+    
+
+    LinkRepository linkRepository;
+    DocumentRepository documentRepository;
+    
+    for(auto& website : webrep.getAllDB())
+    {
+
+        linkRepository.saveDB(LinkEntry(website.getHomePage(), website.getDomain(), LinkStatus::WAITING, time(&currentTime)));         
+
+        while(true)
+        {
+            //std::cout << "main.cpp While true\n";
+            auto links = linkRepository.getByInformationDB(website.getDomain(), LinkStatus::WAITING, 1);
+
+            if(links.empty())
+            {
+                //std::cout << "number of links: " << links.size();
+                break;
+            }
+
+
+            for(auto& link : links)
+            {
+                //std::cout << "main.cpp links  " << link.getUrl() << "\n";
+                if(link.getUrl() == "NOT_VALID" || link.getStatus() == LinkStatus::ERROR)
+                {
+                    continue;
+                }
+
+                auto loadResult = pageLoader.get_data(link.getUrl());
+
+                //std::cout << "getErrorCode " << loadResult.getErrorCode() << "\n";
+
+                if(loadResult.getErrorCode() == -5)
+                {
+                    linkRepository.saveDB(LinkEntry(link.getUrl(), website.getDomain(), LinkStatus::ERROR, time(&currentTime)));
+
+                    continue;
+                }
+                
+                
+                if(loadResult.getStatus() < 200 || loadResult.getStatus() >= 300)
+                {
+                    linkRepository.saveDB(LinkEntry(link.getUrl(), website.getDomain(), LinkStatus::ERROR, time(&currentTime)));
+                    continue;
+                }
+
+                
+                HtmlDocument document((*(loadResult.getBody().get())));
+                std::string effectiveUrl = loadResult.getEffectiveUrl();
+            
+                std::vector<std::string> extractLinks;
+                
+                document.parse();
+                    
+
+                try
+                {
+                    extractLinks = linkExtractor.extractDocument(document, w.getDomain(), effectiveUrl);
+                }
+                catch(std::length_error e)
+                {
+                    //std::cout << "\n e ="  <<e.what();
+                    //std::cout << "\n\n\nSOS\n\n\n";
+                }
+
+                //std::cout << "Extract links size " << extractLinks.size() << "\n";
+
+                for(const std::string& newLink : extractLinks)
+                {
+                    if(linkRepository.getByUrlDB(newLink).has_value())
+                    {
+                        //std::cout << "line 185 " << newLink << "\n";
+                        continue;
+                    }
+                    
+                    size_t indexOfDomain = newLink.find(website.getDomain());
+                    if(indexOfDomain != std::string::npos)
+                    {
+                        LinkEntry trash(newLink, website.getDomain(), LinkStatus::WAITING, time(&currentTime));
+
+                        linkRepository.saveDB(trash);
+                    }
+                }
+                
+                auto documentInformation = informationExtractor.extractInformation(document);
+
+                //webSaver[link.getUrl()] = documentInformation;
+                //documentRepository.saveDB();
+
+                DocumentEntry documentEntry(link.getUrl(), documentInformation.getTitle(), documentInformation.getDescription(), documentInformation.getText());
+
+                documentRepository.saveDB(documentEntry);
+
+                //std::cout << "linkRepository size 201 line \'" << linkRepository.getAllDB().size() << "\'\n";
+                linkRepository.saveDB(LinkEntry(link.getUrl(), link.getDomain(), LinkStatus::SUCCESS, time(&currentTime)));
+                //std::cout << "linkRepository size 203 line \'" << linkRepository.getAllDB().size() << "\'\n";
+            }
+        }
+        
+        webrep.saveDB(WebSite(website.getDomain(), website.getHomePage(), time(&currentTime)));
     }
 }
